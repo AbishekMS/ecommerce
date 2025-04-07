@@ -1,6 +1,8 @@
+// File: com/example/ecommerce/service/ProductService.java
 package com.example.ecommerce.Service;
 
 import com.example.ecommerce.Repository.ProductRepository;
+
 import com.example.ecommerce.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,12 +13,11 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    @Autowired
     private ProductRepository productRepository;
 
     @Autowired
     public ProductService(ProductRepository repository){
-        productRepository=repository;
+        this.productRepository = repository;
     }
 
     public List<Product> getProducts() {

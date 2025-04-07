@@ -1,3 +1,4 @@
+// File: com/example/ecommerce/model/Product.java
 package com.example.ecommerce.model;
 
 import jakarta.persistence.Entity;
@@ -7,7 +8,6 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 @Data
 @AllArgsConstructor
@@ -23,6 +23,6 @@ public class Product {
     private String category;
 
     public void setId(Long id) {
-        this.id=id;
+        this.id = id;
     }
 }
