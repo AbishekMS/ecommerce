@@ -3,6 +3,9 @@ package com.example.ecommerce.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.http.ResponseEntity;
+
+
 
 @Entity
 @AllArgsConstructor
@@ -21,5 +24,10 @@ public class Inventory {
     private Integer minimumStockLevel;
     @Column(name="location")
     private String storageLocation;
+
+    public void setId(Long id) {
+        this.id=id;
+    }
+
 
 }
