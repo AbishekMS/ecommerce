@@ -16,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InventoryController {
 
-    @Autowired
     private final InventoryService inventoryService;
 
     @GetMapping
