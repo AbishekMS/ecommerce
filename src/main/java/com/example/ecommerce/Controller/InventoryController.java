@@ -17,8 +17,7 @@ import java.util.List;
 public class InventoryController {
 
     @Autowired
-    private InventoryService inventoryService;
-
+    private final InventoryService inventoryService;
 
     @GetMapping
     public ResponseEntity<List<Inventory>> getAllInventory(){

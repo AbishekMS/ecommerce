@@ -5,17 +5,19 @@ import com.example.ecommerce.model.Orders;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
-    public OrderService orderService;
+    public final OrderService orderService;
 
     @GetMapping
     public ResponseEntity<List<Orders>> getAllOrders(){
@@ -48,6 +50,13 @@ public class OrderController {
         orderService.updateOrderStatus(id,status);
         return ResponseEntity.ok("Status Updated Successfully");
 
+    }
+
+    @GetMapping("/date-range")
+    public ResponseEntity<List<Orders>> getOrdersByDateRange(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")LocalDateTime start,
+                                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end){
+        if(start==null) start= LocalDateTime.now();
+        return ResponseEntity.ok(orderService.getOrdersByDateRange(start,end));
     }
 
 

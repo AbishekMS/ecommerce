@@ -3,6 +3,7 @@ package com.example.ecommerce.Service;
 import com.example.ecommerce.Repository.InventoryRepository;
 import com.example.ecommerce.Repository.OrderItemRepository;
 import com.example.ecommerce.Repository.OrderRepository;
+import com.example.ecommerce.model.OrderItem;
 import com.example.ecommerce.model.Orders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +40,39 @@ public class OrderService {
         return orderRepository.findByStatus(status);
     }
 
+    @Transactional
     public Orders createOrder(Orders order) {
         order.setOrderName("Order- "+UUID.randomUUID().toString().substring(0,8).toUpperCase());
         order.setOrderDate(LocalDateTime.now());
         order.setStatus("PENDING");
-        return orderRepository.save(order);
+        Orders savedOrder= orderRepository.save(order);
+        for(OrderItem item: order.getOrderItems()){
+            item.setOrder(savedOrder);
+            orderItemRepository.save(item);
+        }
+        return savedOrder;
 
     }
 
+    @Transactional
     public void updateOrderStatus(Long id, String status) {
+        Optional<Orders> order=orderRepository.findById(id);
+        order.ifPresent(eventOrder->{
+            eventOrder.setStatus(status);
+            orderRepository.save(eventOrder);
+        });
     }
+
+    public List<Orders> getOrdersByDateRange(LocalDateTime st, LocalDateTime end){
+        return orderRepository.findByDateRange(st,end);
+    }
+
+    public List<OrderItem> getOrderItemByOrderId(Long id){
+        return orderItemRepository.findByOrderId(id);
+    }
+
+    public List<OrderItem> getOrderItemByProductId(Long id){
+        return orderItemRepository.findByProdctId(id);
+    }
+
 }

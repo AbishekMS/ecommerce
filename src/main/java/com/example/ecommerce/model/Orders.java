@@ -39,4 +39,7 @@ public class Orders {
         this.status = status;
     }
 
+    public List<OrderItem>  getOrderItems() {
+        return orderItems;
+    }
 }

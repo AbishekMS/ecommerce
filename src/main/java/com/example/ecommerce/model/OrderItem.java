@@ -19,8 +19,13 @@ public class OrderItem {
     private Orders order;
 
     @ManyToOne
-    @JoinColumn(name="product_id")
+    @JoinColumn(name = "product_id")
     private Product product;
+
     private Integer quantity;
     private Double price;
+
+    public void setOrder(Orders savedOrder) {
+        this.order=savedOrder;
+    }
 }
