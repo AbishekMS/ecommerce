@@ -14,12 +14,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+    @Autowired
     private final ProductRepository productRepository;
 
-    @Autowired
-    public ProductService(ProductRepository repository){
-        this.productRepository = repository;
-    }
+
 
     public List<Product> getProducts() {
         return productRepository.findAll();

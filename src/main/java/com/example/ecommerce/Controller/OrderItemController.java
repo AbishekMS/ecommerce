@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderItemController {
     @Autowired
-    private final OrderService orderService;
+    private OrderService orderService;
 
     @GetMapping("/order/{orderId}")
     public ResponseEntity<List<OrderItem>> getOrderItemByOrderId(@PathVariable Long orderId){

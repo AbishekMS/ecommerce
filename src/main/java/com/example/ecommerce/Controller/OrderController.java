@@ -17,14 +17,15 @@ import java.util.List;
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
-    public final OrderService orderService;
+    @Autowired
+    public  OrderService orderService;
 
     @GetMapping
     public ResponseEntity<List<Orders>> getAllOrders(){
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
-    @GetMapping("/{id")
+    @GetMapping("/{id}")
     public ResponseEntity<Orders> getOrdersById(@PathVariable Long id){
         return orderService.getOrdersById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
 
@@ -58,6 +59,14 @@ public class OrderController {
         if(start==null) start= LocalDateTime.now();
         return ResponseEntity.ok(orderService.getOrdersByDateRange(start,end));
     }
-
+/* cant delete parent row
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteOrderById(@PathVariable Long id){
+        if(orderService.getOrdersById(id).isPresent()){
+            orderService.deleteByProductId(id);
+            return ResponseEntity.ok("Order:"+ id +" deleted successfully.");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+    }*/
 
 }

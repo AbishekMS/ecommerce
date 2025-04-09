@@ -17,6 +17,6 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
     @Query(value = "select * from orders where status= ?1", nativeQuery = true)
     List<Orders> findByStatus(String status);
 
-    @Query("select * from orders where order_date between :start and :end")
+    @Query(value = "select * from orders where order_date between :start and :end", nativeQuery = true)
     List<Orders> findByDateRange(@Param("start") LocalDateTime st, @Param("end") LocalDateTime end);
 }

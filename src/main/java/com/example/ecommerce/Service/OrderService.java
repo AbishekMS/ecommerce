@@ -19,9 +19,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private OrderRepository orderRepository;
-    private OrderItemRepository orderItemRepository;
-    private InventoryService inventoryService;
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final InventoryService inventoryService;
 
 
     public List<Orders> getAllOrders() {
@@ -75,4 +75,7 @@ public class OrderService {
         return orderItemRepository.findByProdctId(id);
     }
 
+    public void deleteByProductId(Long id) {
+        orderRepository.deleteById(id);
+    }
 }

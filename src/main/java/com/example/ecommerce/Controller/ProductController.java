@@ -1,8 +1,10 @@
 
 package com.example.ecommerce.Controller;
 
+import com.example.ecommerce.Service.OrderService;
 import com.example.ecommerce.Service.ProductService;
 
+import com.example.ecommerce.model.OrderItem;
 import com.example.ecommerce.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     @Autowired
-    private final ProductService productService;
+    private ProductService productService;
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(){
@@ -40,6 +42,7 @@ public class ProductController {
     public ResponseEntity<List<Product>> searchProducts(@RequestParam String name){
         return ResponseEntity.ok(productService.searchByName(name));
     }
+    //http://localhost:8081/products/search?name=Noodles
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product){
@@ -62,4 +65,5 @@ public class ProductController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ID: " + id + " not found");
     }
+
 }
