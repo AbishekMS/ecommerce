@@ -1,13 +1,9 @@
+package com.example.ecommerce.controller;
 
-package com.example.ecommerce.Controller;
-
-import com.example.ecommerce.Service.OrderService;
-import com.example.ecommerce.Service.ProductService;
-
-import com.example.ecommerce.model.OrderItem;
+import com.example.ecommerce.repository.ProductRepository;
+import com.example.ecommerce.service.ProductService;
 import com.example.ecommerce.model.Product;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +14,9 @@ import java.util.List;
 @RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
-    @Autowired
-    private ProductService productService;
+
+    private final ProductService productService;
+    private final ProductRepository productRepository;
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(){
@@ -47,6 +44,11 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product){
         return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<Product>> createAtOnce(@RequestBody List<Product> products){
+        return new ResponseEntity<>(productRepository.saveAll(products), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

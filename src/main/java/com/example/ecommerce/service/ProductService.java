@@ -1,7 +1,7 @@
 // File: com/example/ecommerce/service/ProductService.java
-package com.example.ecommerce.Service;
+package com.example.ecommerce.service;
 
-import com.example.ecommerce.Repository.ProductRepository;
+import com.example.ecommerce.repository.ProductRepository;
 
 import com.example.ecommerce.model.Product;
 import lombok.RequiredArgsConstructor;

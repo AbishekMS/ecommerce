@@ -25,7 +25,5 @@ public class OrderItem {
     private Integer quantity;
     private Double price;
 
-    public void setOrder(Orders savedOrder) {
-        this.order=savedOrder;
-    }
+
 }

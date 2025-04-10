@@ -1,4 +1,3 @@
-// File: com/example/ecommerce/model/Product.java
 package com.example.ecommerce.model;
 
 import jakarta.persistence.Entity;
@@ -22,7 +21,5 @@ public class Product {
     private Double price;
     private String category;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+
 }

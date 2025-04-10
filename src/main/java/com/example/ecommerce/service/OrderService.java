@@ -1,16 +1,18 @@
-package com.example.ecommerce.Service;
+package com.example.ecommerce.service;
 
-import com.example.ecommerce.Repository.InventoryRepository;
-import com.example.ecommerce.Repository.OrderItemRepository;
-import com.example.ecommerce.Repository.OrderRepository;
+import com.example.ecommerce.exception.InvalidProductId;
+import com.example.ecommerce.model.Product;
+import com.example.ecommerce.repository.OrderItemRepository;
+import com.example.ecommerce.repository.OrderRepository;
 import com.example.ecommerce.model.OrderItem;
 import com.example.ecommerce.model.Orders;
+import com.example.ecommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +24,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final InventoryService inventoryService;
+    private final ProductRepository productRepository;
 
 
     public List<Orders> getAllOrders() {
@@ -42,15 +45,22 @@ public class OrderService {
 
     @Transactional
     public Orders createOrder(Orders order) {
+        Double amt=0.0;
         order.setOrderName("Order- "+UUID.randomUUID().toString().substring(0,8).toUpperCase());
-        order.setOrderDate(LocalDateTime.now());
+        order.setOrderDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         order.setStatus("PENDING");
-        Orders savedOrder= orderRepository.save(order);
+
         for(OrderItem item: order.getOrderItems()){
-            item.setOrder(savedOrder);
+            Long productId=item.getProduct().getId();
+            Product product= productRepository.findById(productId).orElseThrow(()-> new InvalidProductId(productId));
+            item.setPrice(product.getPrice());
+            item.setProduct(product);
+            item.setOrder(order);
+            amt+= product.getPrice()* item.getQuantity();
             orderItemRepository.save(item);
         }
-        return savedOrder;
+        order.setTotalAmount(amt);
+        return orderRepository.save(order);
 
     }
 
@@ -68,6 +78,7 @@ public class OrderService {
     }
 
     public List<OrderItem> getOrderItemByOrderId(Long id){
+
         return orderItemRepository.findByOrderId(id);
     }
 

@@ -1,6 +1,6 @@
-package com.example.ecommerce.Controller;
+package com.example.ecommerce.controller;
 
-import com.example.ecommerce.Service.OrderService;
+import com.example.ecommerce.service.OrderService;
 import com.example.ecommerce.model.Orders;
 
 import lombok.RequiredArgsConstructor;

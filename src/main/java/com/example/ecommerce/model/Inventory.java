@@ -24,9 +24,4 @@ public class Inventory {
     @Column(name="location")
     private String storageLocation;
 
-    public void setId(Long id) {
-        this.id=id;
-    }
-
-
 }

@@ -1,11 +1,10 @@
-package com.example.ecommerce.Service;
+package com.example.ecommerce.service;
 
-import com.example.ecommerce.Repository.InventoryRepository;
+import com.example.ecommerce.repository.InventoryRepository;
 import com.example.ecommerce.model.Inventory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
@@ -40,6 +39,5 @@ public class InventoryService {
     public boolean decreaseStocksAtInventory(Long id, int quantity) {
         int cnt= inventoryRepository.decreaseStocks(id,quantity);
         return cnt>0;
-
     }
 }

@@ -1,10 +1,11 @@
-package com.example.ecommerce.Controller;
+package com.example.ecommerce.controller;
 
-import com.example.ecommerce.Service.InventoryService;
+import com.example.ecommerce.exception.InvalidProductId;
+import com.example.ecommerce.repository.ProductRepository;
+import com.example.ecommerce.service.InventoryService;
 import com.example.ecommerce.model.Inventory;
+import com.example.ecommerce.model.Product;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.List;
 public class InventoryController {
 
     private final InventoryService inventoryService;
+    private final ProductRepository productRepository;
 
     @GetMapping
     public ResponseEntity<List<Inventory>> getAllInventory(){
@@ -40,6 +42,9 @@ public class InventoryController {
 
     @PostMapping
     public ResponseEntity<Inventory> createInventory(@RequestBody Inventory inventory){
+        Long productId= inventory.getProduct().getId();
+        Product product= productRepository.findById(productId).orElseThrow(()-> new InvalidProductId(productId));
+        inventory.setProduct(product);
         return new ResponseEntity<>(inventoryService.saveInventory(inventory), HttpStatus.CREATED);
     }
 
@@ -51,14 +56,12 @@ public class InventoryController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/decreaseStock/{id}/{quantity}")
-    public ResponseEntity<String> deleteInventoryId(@PathVariable Long id, @PathVariable int quantity){
-        boolean flag= inventoryService.decreaseStocksAtInventory(id,quantity);
+    @PutMapping("/decreaseStock/{productId}/{quantity}")
+    public ResponseEntity<String> deleteInventoryId(@PathVariable Long productId, @PathVariable int quantity){
+        productRepository.findById(productId).orElseThrow(()-> new InvalidProductId(productId));
+
+        boolean flag= inventoryService.decreaseStocksAtInventory(productId,quantity);
         if(flag) return ResponseEntity.ok("Stock decreased successfully");
-        else return ResponseEntity.badRequest().body("Failed to decrease the stock, either stock is insufficient or product not found");
+        else return ResponseEntity.badRequest().body("Failed to decrease the stock, stock is insufficient");
     }
-
-
-
-
 }
