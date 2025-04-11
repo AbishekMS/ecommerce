@@ -1,5 +1,6 @@
 package com.example.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String orderName;  // this orderNumber
+    private String orderName;
     private String orderDate;
     private String customerName;
     private String customerEmail;
@@ -25,12 +26,12 @@ public class Orders {
     private String status;
 
     @OneToMany(mappedBy = "order")
+    @JsonBackReference
     private List<OrderItem> orderItems;
 
     /*
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }*/
-
 
 }
