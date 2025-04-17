@@ -2,7 +2,6 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.service.OrderService;
 import com.example.ecommerce.model.OrderItem;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +14,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/order-items")
-@RequiredArgsConstructor
 public class OrderItemController {
-    @Autowired
     private OrderService orderService;
+
+    @Autowired
+    public OrderItemController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @GetMapping("/order/{orderId}")
     public ResponseEntity<List<OrderItem>> getOrderItemByOrderId(@PathVariable Long orderId){

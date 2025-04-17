@@ -1,5 +1,6 @@
 package com.example.ecommerce.service;
 
+import com.example.ecommerce.enums.OrderStatus;
 import com.example.ecommerce.model.OrderItem;
 import com.example.ecommerce.model.Orders;
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public interface OrderService {
 
     Orders createOrder(Orders order);
 
-    void updateOrderStatus(Long id, String status);
+    void updateOrderStatus(Long id, OrderStatus status);
 
     List<Orders> getOrdersByDateRange(LocalDateTime st, LocalDateTime end);
 

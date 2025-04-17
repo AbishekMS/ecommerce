@@ -3,20 +3,27 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.service.ProductService;
 import com.example.ecommerce.model.Product;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/products")
-@RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class ProductController {
 
-    private final ProductService productService;
-    private final ProductRepository productRepository;
+    private ProductService productService;
+    private ProductRepository productRepository;
+
+    @Autowired
+    public ProductController(ProductService productService, ProductRepository productRepository) {
+        this.productService = productService;
+        this.productRepository = productRepository;
+    }
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(){

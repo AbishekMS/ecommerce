@@ -5,20 +5,27 @@ import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.service.InventoryService;
 import com.example.ecommerce.model.Inventory;
 import com.example.ecommerce.model.Product;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/inventory")
-@RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class InventoryController {
 
-    private final InventoryService inventoryService;
-    private final ProductRepository productRepository;
+    private  InventoryService inventoryService;
+    private  ProductRepository productRepository;
+
+    @Autowired
+    public InventoryController(InventoryService inventoryService, ProductRepository productRepository) {
+        this.inventoryService = inventoryService;
+        this.productRepository = productRepository;
+    }
 
     @GetMapping
     public ResponseEntity<List<Inventory>> getAllInventory(){

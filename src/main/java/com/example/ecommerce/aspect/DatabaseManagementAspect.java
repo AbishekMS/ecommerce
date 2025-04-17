@@ -1,6 +1,5 @@
 package com.example.ecommerce.aspect;
 
-
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -21,10 +20,10 @@ public class DatabaseManagementAspect {
         }
         finally{
             long end=System.nanoTime();
-            long total_runtime=(end-start)/1000000;
-            log.info("Operation [{}] completed in {} ms", methodName, total_runtime);
-            if(total_runtime> 1000){
-                log.warn("Attention needed slow database operation detected: [{}] takes {} ms", methodName,total_runtime);
+            long totalRuntime=(end-start)/1000000;
+            log.info("Operation [{}] completed in {} ms", methodName, totalRuntime);
+            if(totalRuntime> 1000){
+                log.warn("Attention needed slow database operation detected: [{}] takes {} ms", methodName,totalRuntime);
             }
 
         }

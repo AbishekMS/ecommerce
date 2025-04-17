@@ -1,5 +1,6 @@
-package com.example.ecommerce.serviceImplementation;
+package com.example.ecommerce.serviceimplementation;
 
+import com.example.ecommerce.enums.OrderStatus;
 import com.example.ecommerce.exception.InvalidProductId;
 import com.example.ecommerce.model.OrderItem;
 import com.example.ecommerce.model.Orders;
@@ -7,7 +8,6 @@ import com.example.ecommerce.model.Product;
 import com.example.ecommerce.repository.OrderItemRepository;
 import com.example.ecommerce.repository.OrderRepository;
 import com.example.ecommerce.repository.ProductRepository;
-import com.example.ecommerce.service.InventoryService;
 import com.example.ecommerce.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,17 +21,20 @@ import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private OrderItemRepository orderItemRepository;
-    @Autowired
-    private InventoryService inventoryService;
-    @Autowired
-    private ProductRepository productRepository;
 
+    private  OrderRepository orderRepository;
+    private  OrderItemRepository orderItemRepository;
+    private  ProductRepository productRepository;
+
+    @Autowired
+    public OrderServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, ProductRepository productRepository) {
+        this.orderRepository = orderRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.productRepository = productRepository;
+    }
 
     public List<Orders> getAllOrders() {
+
         return orderRepository.findAll();
     }
 
@@ -49,19 +52,27 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public Orders createOrder(Orders order) {
-        Double amt=0.0;
+        double amt=0.0;
         order.setOrderName("Order- "+ UUID.randomUUID().toString().substring(0,8).toUpperCase());
         order.setOrderDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-        order.setStatus("PENDING");
+        order.setStatus(OrderStatus.PENDING);
 
         for(OrderItem item: order.getOrderItems()){
             Long productId=item.getProduct().getId();
-            Product product= productRepository.findById(productId).orElseThrow(()-> new InvalidProductId(productId));
-            item.setPrice(product.getPrice());
+            Product product= productRepository.findById(productId)
+                                              .orElseThrow(()-> new InvalidProductId(productId));
+           /* item.setPrice(product.getPrice());
             item.setProduct(product);
-            item.setOrder(order);
+            item.setOrder(order);*/
+
+            OrderItem buildItem= OrderItem.builder()
+                    .product(product)
+                    .price(product.getPrice())
+                    .order(order)
+                    .build();
+
             amt+= product.getPrice()* item.getQuantity();
-            orderItemRepository.save(item);
+            orderItemRepository.save(buildItem);
         }
         order.setTotalAmount(amt);
         return orderRepository.save(order);
@@ -69,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional
-    public void updateOrderStatus(Long id, String status) {
+    public void updateOrderStatus(Long id, OrderStatus status) {
         Optional<Orders> order=orderRepository.findById(id);
         order.ifPresent(eventOrder->{
             eventOrder.setStatus(status);
@@ -93,4 +104,6 @@ public class OrderServiceImpl implements OrderService {
     public void deleteByProductId(Long id) {
         orderRepository.deleteById(id);
     }
+
+
 }

@@ -1,9 +1,9 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.enums.OrderStatus;
 import com.example.ecommerce.service.OrderService;
 import com.example.ecommerce.model.Orders;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -15,10 +15,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
-@RequiredArgsConstructor
 public class OrderController {
+
+    private OrderService orderService;
+
     @Autowired
-    public  OrderService orderService;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Orders>> getAllOrders(){
@@ -48,8 +52,13 @@ public class OrderController {
 
     @PutMapping("/update/{id}/status/{status}")
     public ResponseEntity<String> updateOrderStatus(@PathVariable Long id, @PathVariable String status){
-        orderService.updateOrderStatus(id,status);
-        return ResponseEntity.ok("Status Updated Successfully");
+       try {
+            OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
+            orderService.updateOrderStatus(id, orderStatus);
+            return ResponseEntity.ok("Status Updated Successfully");
+        } catch(IllegalArgumentException ex){
+           return ResponseEntity.badRequest().body("Invalid status value: "+status);
+       }
 
     }
 
@@ -59,14 +68,6 @@ public class OrderController {
         if(start==null) start= LocalDateTime.now();
         return ResponseEntity.ok(orderService.getOrdersByDateRange(start,end));
     }
-/* cant delete parent row
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteOrderById(@PathVariable Long id){
-        if(orderService.getOrdersById(id).isPresent()){
-            orderService.deleteByProductId(id);
-            return ResponseEntity.ok("Order:"+ id +" deleted successfully.");
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
-    }*/
+
 
 }

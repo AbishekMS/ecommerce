@@ -1,4 +1,4 @@
-package com.example.ecommerce.serviceImplementation;
+package com.example.ecommerce.serviceimplementation;
 
 import com.example.ecommerce.model.Inventory;
 import com.example.ecommerce.repository.InventoryRepository;
@@ -10,8 +10,13 @@ import java.util.Optional;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
-    @Autowired
     private InventoryRepository inventoryRepository;
+
+    @Autowired
+    public InventoryServiceImpl(InventoryRepository inventoryRepository)
+    {
+        this.inventoryRepository=inventoryRepository;
+    }
 
     public List<Inventory> getAllInventory() {
         return inventoryRepository.findAll();
@@ -30,6 +35,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     public Inventory saveInventory(Inventory inventory) {
+        if(inventory.getProduct()==null || inventory.getProduct().getId()==null) throw new IllegalArgumentException("Product is required for inventory");
         return inventoryRepository.save(inventory);
     }
 

@@ -8,7 +8,8 @@ public interface InventoryService {
 
    Optional<Inventory> getInventoryById(Long id);
 
-   Optional<Inventory> getInventoryByProductId(Long id) ;
+   Optional<Inventory> getInventoryByProductId(Long id);
+
    List<Inventory> getLowStockInventory();
 
    Inventory saveInventory(Inventory inventory);
