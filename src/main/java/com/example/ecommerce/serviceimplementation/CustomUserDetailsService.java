@@ -4,6 +4,9 @@ import com.example.ecommerce.model.UserPrincipal;
 import com.example.ecommerce.model.Users;
 import com.example.ecommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,6 +23,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private PasswordEncoder encoder;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTService jwtService;
     //private BCryptPasswordEncoder encoder= new BCryptPasswordEncoder(12);
 
     @Override
@@ -37,6 +45,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
         return user;
+    }
+    public String verify(Users user){
+        Authentication authentication= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getName(),user.getPassword()));
+        if(authentication.isAuthenticated()){
+            return jwtService.generateToken(user.getName());
+        }
+        else return "Fail";
 
     }
+
 }

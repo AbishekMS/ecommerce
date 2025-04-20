@@ -5,9 +5,11 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 @ControllerAdvice
@@ -38,5 +40,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String,Object>> illegalArugementExceptionHandler(Exception ex, HttpServletRequest request){
         return ResponseUtil.errorResponse(ex,request,"Illegal Argument Exception",HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Map<String,Object>> usernameNotFoundExceptionHandler(Exception ex, HttpServletRequest request){
+        return ResponseUtil.errorResponse(ex,request,"Username Not Found Exception",HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoSuchAlgorithmException.class)
+    public ResponseEntity<Map<String,Object>> noSuchAlgorithmExceptionHandler(Exception ex, HttpServletRequest request){
+        return ResponseUtil.errorResponse(ex,request,"There is no such algorithm available",HttpStatus.BAD_REQUEST);
     }
 }
