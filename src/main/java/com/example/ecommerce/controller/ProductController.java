@@ -26,7 +26,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts(){
+    private ResponseEntity<List<Product>> getAllProducts(){
         return ResponseEntity.ok(productService.getProducts());
     }
 

@@ -52,18 +52,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public Orders createOrder(Orders order) {
-        double amt=0.0;
+
         order.setOrderName("Order- "+ UUID.randomUUID().toString().substring(0,8).toUpperCase());
         order.setOrderDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         order.setStatus(OrderStatus.PENDING);
 
-        for(OrderItem item: order.getOrderItems()){
+        double amt= order.getOrderItems().stream().mapToDouble(item->{
             Long productId=item.getProduct().getId();
             Product product= productRepository.findById(productId)
                                               .orElseThrow(()-> new InvalidProductId(productId));
-           /* item.setPrice(product.getPrice());
-            item.setProduct(product);
-            item.setOrder(order);*/
+
 
             OrderItem buildItem= OrderItem.builder()
                     .product(product)
@@ -71,9 +69,10 @@ public class OrderServiceImpl implements OrderService {
                     .order(order)
                     .build();
 
-            amt+= product.getPrice()* item.getQuantity();
             orderItemRepository.save(buildItem);
-        }
+            return product.getPrice()* item.getQuantity();
+
+        }).sum();
         order.setTotalAmount(amt);
         return orderRepository.save(order);
 
